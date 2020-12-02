@@ -1,4 +1,7 @@
 #include "raylib.h"
+#include <stdlib.h>
+#include <time.h>
+#include <stdio.h>
 
 int main(void)
 {
@@ -9,7 +12,17 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
     
-    Vector2 ballPosition = {(float)screenWidth/2, (float)screenHeight/2};
+    int PointsX[10];
+    int PointsY[10];
+    
+    srand (time(0));
+    
+    for (int i = 1; i <= 10; i++) {
+        int x = rand() % screenWidth;
+        int y = rand() % screenHeight;
+        PointsX[i] = x;
+        PointsY[i] = y;
+    }
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -28,8 +41,10 @@ int main(void)
 
             ClearBackground(RAYWHITE);
 
+            for (int i = 0; i <= 10; i++) 
+                DrawCircle (PointsX[i], PointsY[i], 5, BLACK);
             
-            DrawCircleV(ballPosition, 50, RED);
+            //DrawCircleV(ballPosition, 50, RED);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
