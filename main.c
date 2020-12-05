@@ -1,28 +1,19 @@
 #include "raylib.h"
-#include <stdlib.h>
-#include <time.h>
+#include "properties.h"
+#include "utilities.h"
+#include "point.h"
 #include <stdio.h>
 
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(WINWIDTH, WINHEIGHT, "Segmente");
     
-    int PointsX[10];
-    int PointsY[10];
+    struct Point pointArray[10]; // an array that keeps track of where the points are in plane
     
-    srand (time(0));
-    
-    for (int i = 1; i <= 10; i++) {
-        int x = rand() % screenWidth;
-        int y = rand() % screenHeight;
-        PointsX[i] = x;
-        PointsY[i] = y;
-    }
+    setRandomPoints (pointArray, 10);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -40,11 +31,9 @@ int main(void)
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
-
-            for (int i = 0; i <= 10; i++) 
-                DrawCircle (PointsX[i], PointsY[i], 5, BLACK);
             
-            //DrawCircleV(ballPosition, 50, RED);
+            for (int i = 1; i <= 10; i++) 
+                DrawCircle (pointArray[i].x, pointArray[i].y, 5, BLACK);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
