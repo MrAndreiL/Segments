@@ -2,6 +2,19 @@
 #include "properties.h"
 #include "utilities.h"
 #include "point.h"
+ 
+static void drawTitleScreen(void)
+{
+    // BackGround Rectangle for image.
+    int backWidth = GetScreenWidth() / 3;
+    int backHeight = GetScreenHeight() / 3;
+    float roundness = 0.2f;
+    int segments = 0;
+    Rectangle backRect = {GetScreenWidth() / 2 - backWidth / 2, 
+                          GetScreenHeight() / 2 - backHeight,
+                           backWidth, backHeight};
+    DrawRectangleRounded(backRect, roundness, segments, GRAY);
+}
 #include <stdio.h>
 #define NUM_FRAMES 1
 
@@ -16,6 +29,7 @@ int main(void)
     SetWindowMonitor (0);
     SetTargetFPS(60); 
     
+    // Upload placeholder image.
     InitAudioDevice();
     
     //Sound fxButton = LoadSound("Resources/");
@@ -50,6 +64,7 @@ int main(void)
             btnState = 0;
         
         BeginDrawing();
+            drawTitleScreen();
             ClearBackground(RAYWHITE);
             //for (int i = 1; i <= 10; i++) 
                 //DrawCircle (pointArray[i].x, pointArray[i].y, 5, BLACK);
