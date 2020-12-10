@@ -19,12 +19,12 @@ int main(void)
     InitAudioDevice();
     
     //Sound fxButton = LoadSound("Resources/");
-    Texture2D button = LoadTexture("C:/Users/Doris/Facultate/Segments/Game/Resources/button.png");
+    Texture2D button = LoadTexture("Resources/button.png");
     
     int frameHeight = button.height/NUM_FRAMES;
     Rectangle sourceRec = {0,0,button.width,frameHeight};
     
-    Rectangle btnBounds = {WINWIDTH-button.width/2,WINHEIGHT-button.height/NUM_FRAMES/2,button.width,frameHeight};
+    Rectangle btnBounds = {WINWIDTH/0.85-button.width/2,WINHEIGHT/0.6-button.height/NUM_FRAMES/2,button.width,frameHeight};
     int btnState = 0;
     bool btnAction = false;
     Vector2 mousePoint = { 0.0f, 0.0f };
