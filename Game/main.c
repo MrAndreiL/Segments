@@ -3,20 +3,15 @@
 #include "utilities.h"
 #include "point.h"
  
-static void drawTitleScreen(void)
+static void drawTitleScreen(Rectangle backRect)
 {
     // BackGround Rectangle for image.
     int backWidth = GetScreenWidth() / 3;
     int backHeight = GetScreenHeight() / 3;
     float roundness = 0.2f;
     int segments = 0;
-    Rectangle backRect = {GetScreenWidth() / 2 - backWidth / 2, 
-                          GetScreenHeight() / 2 - backHeight,
-                           backWidth, backHeight};
     DrawRectangleRounded(backRect, roundness, segments, GRAY);
 }
-#include <stdio.h>
-#define NUM_FRAMES 1
 
 int main(void)
 {
@@ -26,14 +21,22 @@ int main(void)
     
     InitWindow(WINWIDTH, WINHEIGHT, "Segmente");
 
-    SetWindowMonitor (0);
+    SetWindowMonitor (1);
     SetTargetFPS(60); 
     
     // Upload placeholder image.
+    Rectangle backRect = {GetScreenWidth() / 2 - backWidth / 2, 
+                          GetScreenHeight() / 2 - backHeight,
+                           backWidth, backHeight};
+    Image titlePhoto = LoadImage ("Resources/titlephoto.png");
+    ImageCrop (&titlePhoto, backRect);
+
+
+    /* Buttons */
     InitAudioDevice();
     
     //Sound fxButton = LoadSound("Resources/");
-    Texture2D button = LoadTexture("C:/Users/Doris/Facultate/Segments/Game/Resources/button.png");
+    Texture2D button = LoadTexture("Resources/button.png");
     
     int frameHeight = button.height/NUM_FRAMES;
     Rectangle sourceRec = {0,0,button.width,frameHeight};
@@ -62,12 +65,9 @@ int main(void)
         }
         else
             btnState = 0;
-        
         BeginDrawing();
-            drawTitleScreen();
+            drawTitleScreen(backRect);
             ClearBackground(RAYWHITE);
-            //for (int i = 1; i <= 10; i++) 
-                //DrawCircle (pointArray[i].x, pointArray[i].y, 5, BLACK);
             DrawTextureRec(button, sourceRec, (Vector2){btnBounds.x, btnBounds.y}, GREEN);
         EndDrawing();
     }
