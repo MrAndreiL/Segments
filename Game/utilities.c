@@ -1,23 +1,27 @@
 #include "utilities.h"
 #include "properties.h"
 #include "point.h"
+#include "raylib.h"
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+ 
 
-void setRandomPoints (struct Point points[], int pointNumber, int x, int y, int width, int height)
+void setRandomPoints (struct Point point[], int pointNumber, Rectangle bound)
 {
-    // This function fills the pointLocation matrix with a random x and y position
-    // line 0 - x position
-    // line 1 - y position
     srand (time(0));
-    
-    int widthBound  = x + width - 10;
-    int heightBound = y + height - 10;
 
-    for (int i = 1; i <= pointNumber; i++) {
-    	points[i].x = (rand() % widthBound) + 10;
-    	points[i].y = (rand() % heightBound) + 10;
-
+    const int lengthX = (int)(bound.x + bound.width);
+    const int lengthY = (int)(bound.y + bound.height);
+    int x, y;
+    for (int i = 0; i < pointNumber; i++) {
+    	x = rand() % lengthX;
+        while (!(bound.x <= x && x <= bound.width))
+             x = rand() % lengthX;
+        y = rand() % lengthY;
+        while (!(bound.y <= y && y <= bound.height))
+             y = rand() % lengthY;
+        point[i].x = x;
+        point[i].y = y;
     }
 }
