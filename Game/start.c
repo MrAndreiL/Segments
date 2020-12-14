@@ -19,11 +19,11 @@ void startScreen(void)
 {
     InitWindow(0, 0, "Segmente");
 
-    SetWindowMonitor (1);
+    SetWindowMonitor (0);
     SetTargetFPS(60); 
     
-    const int WINWIDTH = GetScreenWidth();
-    const int WINHEIGHT = GetScreenHeight();
+    const int WINWIDTH = GetScreenWidth()/3;
+    const int WINHEIGHT = GetScreenHeight()/3;
     const int NUM_FRAMES = 1;
 
     int scenePath = 0; // All possible scene changes based on their path
@@ -37,7 +37,6 @@ void startScreen(void)
     
     //Sound fxButton = LoadSound("Resources/");
     Texture2D button = LoadTexture("Resources/button.png");
-
     Texture2D button2 = LoadTexture("Resources/sound.png");
     Texture2D button3 = LoadTexture("Resources/settings.png");
     
@@ -46,13 +45,13 @@ void startScreen(void)
     int frameHeight3 = button3.height/NUM_FRAMES;
     
     Rectangle sourceRec = {0,0,button.width,frameHeight};
-    Rectangle btnBounds = {WINWIDTH/0.825-button.width/2,WINHEIGHT/0.85-button.height/2,button.width,frameHeight};
+    Rectangle btnBounds = {WINWIDTH/0.675-button.width/2,WINHEIGHT/0.5-button.height/2,button.width,frameHeight};
     
     Rectangle sourceRec2 = {0,0,button2.width,frameHeight2};
-    Rectangle btn2Bounds = {WINWIDTH/0.85-button2.width/2,WINHEIGHT/0.725-button2.height/2,button2.width,frameHeight2};
+    Rectangle btn2Bounds = {WINWIDTH/0.72-button2.width/2,WINHEIGHT/0.425-button2.height/2,button2.width,frameHeight2};
     
     Rectangle sourceRec3 = {0,0,button3.width,frameHeight3};
-    Rectangle btn3Bounds = {WINWIDTH/0.785-button3.width/2,WINHEIGHT/0.725-button3.height/2,button3.width,frameHeight3};
+    Rectangle btn3Bounds = {WINWIDTH/0.635-button3.width/2,WINHEIGHT/0.425-button3.height/2,button3.width,frameHeight3};
     
     int btnState = 0;
     bool btnAction = false;
