@@ -1,6 +1,5 @@
 #include "utilities.h"
 #include "properties.h"
-#include "point.h"
 #include "raylib.h"
 #include <time.h>
 #include <stdlib.h>
@@ -23,5 +22,6 @@ void setRandomPoints (struct Point point[], int pointNumber, Rectangle bound)
              y = rand() % lengthY;
         point[i].x = x;
         point[i].y = y;
+        point[i].paired = 0;
     }
 }
