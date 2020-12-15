@@ -86,7 +86,6 @@ void startScreen(void)
             drawTitleScreen();
             ClearBackground(RAYWHITE);
             DrawTextureRec(button, sourceRec, (Vector2){btnBounds.x, btnBounds.y}, GREEN);
-            
             DrawTextureRec(button, sourceRec, (Vector2){btnBounds.x, btnBounds.y}, RAYWHITE);
             DrawTextureRec(button2, sourceRec2, (Vector2){btn2Bounds.x, btn2Bounds.y}, RAYWHITE);
             DrawTextureRec(button3, sourceRec3, (Vector2){btn3Bounds.x, btn3Bounds.y}, RAYWHITE);
