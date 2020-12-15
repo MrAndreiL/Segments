@@ -8,6 +8,5 @@ struct Point
 	int paired;
 };
 
-void setRandomPoints(struct Point point[], int pointNumber, Rectangle bound);
 
 
