@@ -18,8 +18,9 @@ static void drawTitleScreen(void)
 void startScreen(void)
 {
     InitWindow(0, 0, "Segmente");
+    //InitAudioDevice();
 
-    SetWindowMonitor (0);
+    SetWindowMonitor (1);
     SetTargetFPS(60); 
     
     const int WINWIDTH = GetScreenWidth()/3;

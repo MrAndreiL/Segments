@@ -4,6 +4,7 @@
 int radius;
 double pointDis;
 
+
 struct Point
 {
 	int x;

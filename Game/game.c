@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-
+#include <stdio.h>
 
 static int pointDistance (int x1, int y1, int x2, int y2)
 {
@@ -50,33 +50,62 @@ static void DrawBackground(Rectangle backRect, Rectangle frontRect)
     DrawRectangleRounded(frontRect, roundness, segments, WHITE);
 }
 
-
 static void DrawPoints(struct Point point[], int length)
 {
-    for (int i = 0; i < length; i++) 
+    for (int i = 0; i < length; i++)
         DrawCircle(point[i].x, point[i].y, radius, BLACK);
+}
+
+static void Render(Rectangle backRect, Rectangle frontRect, struct Point point[], int length)
+{
+    ClearBackground(WHITE);
+    DrawBackground(backRect, frontRect);
+    DrawPoints(point, length);
+}
+
+static void DelayTime(float seconds)
+{
+    seconds += GetTime();
+    while(GetTime() < seconds) // Delay Effect
+              ;
+}
+
+static void PreRender(Rectangle backRect, Rectangle frontRect, struct Point point[], int length)
+{
+    const float seconds = 0.35;
+    for (int i = 0; i < length;) {
+        BeginDrawing();
+            ClearBackground(WHITE);
+            DrawBackground(backRect, frontRect);
+            DrawPoints(point, i);
+        EndDrawing();
+        DelayTime(seconds);
+        i++;
+    }
 }
 
 void startGame()
 {
+    // Constants.
+    radius = 8;
+    pointDis = 65.0f;
+    
+   
     // Background rectangle
     Rectangle backRect = { 60, 50, GetScreenWidth() - 120, (GetScreenHeight() - GetScreenHeight() / 4) - 50};
     Rectangle frontRect = { 70, 60, GetScreenWidth() - 140, (GetScreenHeight() - GetScreenHeight() / 4) - 70};
     
     // Random point spawning
     struct Point point[30];
-    radius = 8;
-    pointDis = 65.0f;
     Rectangle bound = {frontRect.x + 50, frontRect.y + 50, frontRect.width - 50, frontRect.height - 50};
     setRandomPoints(point, 30, bound);
-   
+    
+    PreRender(backRect, frontRect, point, 30);
     
     while (!WindowShouldClose())
     {
         BeginDrawing();
-            ClearBackground(WHITE);
-            DrawBackground(backRect, frontRect);
-            DrawPoints(point, 30);
+            Render(backRect, frontRect, point, 30);
         EndDrawing();
     }
     CloseWindow();
