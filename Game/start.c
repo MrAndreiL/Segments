@@ -22,6 +22,7 @@ void startScreen(void)
 
     SetWindowMonitor (1);
     SetTargetFPS(60); 
+    SetMousePosition(0, 0);
     
     const int WINWIDTH = GetScreenWidth()/3;
     const int WINHEIGHT = GetScreenHeight()/3;

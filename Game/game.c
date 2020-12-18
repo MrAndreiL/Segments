@@ -4,7 +4,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-#include <stdio.h>
+
+/* Functions regarding spawning points */
 
 static int pointDistance (int x1, int y1, int x2, int y2)
 {
@@ -42,6 +43,8 @@ static void setRandomPoints (struct Point point[], int length, Rectangle bound)
     }
 }
 
+// Graphical rendering and prerendering functions
+
 static void DrawBackground(Rectangle backRect, Rectangle frontRect)
 {
     const float roundness = 0.2f;
@@ -66,7 +69,7 @@ static void Render(Rectangle backRect, Rectangle frontRect, struct Point point[]
 static void DelayTime(float seconds)
 {
     seconds += GetTime();
-    while(GetTime() < seconds) // Delay Effect
+    while(GetTime() < seconds) // Delay effect based on delta time
               ;
 }
 
@@ -84,12 +87,21 @@ static void PreRender(Rectangle backRect, Rectangle frontRect, struct Point poin
     }
 }
 
+static void MouseAction(int *mouseX, int *mouseY, struct Point point[], int length)
+{
+    Vector2 mousePosition = GetMousePosition();
+    *mouseX = mousePosition.x;
+    *mouseY = mousePosition.y;
+    for (int i = 0; i < length; i++) 
+        if (pointDistance(*mouseX, *mouseY, point[i].x, point[i].y) <= radius)
+            DrawCircle(point[i].x, point[i].y, radius, MAROON);
+}   
+
 void startGame()
 {
     // Constants.
     radius = 8;
     pointDis = 65.0f;
-    
    
     // Background rectangle
     Rectangle backRect = { 60, 50, GetScreenWidth() - 120, (GetScreenHeight() - GetScreenHeight() / 4) - 50};
@@ -99,13 +111,18 @@ void startGame()
     struct Point point[30];
     Rectangle bound = {frontRect.x + 50, frontRect.y + 50, frontRect.width - 50, frontRect.height - 50};
     setRandomPoints(point, 30, bound);
-    
+                                                                                        
     PreRender(backRect, frontRect, point, 30);
+    
+    // Initial mouse positions
+    int mouseX = GetMouseX();
+    int mouseY = GetMouseY();
     
     while (!WindowShouldClose())
     {
         BeginDrawing();
             Render(backRect, frontRect, point, 30);
+            MouseAction(&mouseX, &mouseY, point, 30);
         EndDrawing();
     }
     CloseWindow();
