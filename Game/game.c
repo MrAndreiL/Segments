@@ -1,15 +1,8 @@
 #include "game.h"
 #include "raylib.h"
-#include "utilities.h"
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
-
-struct Segment
-{
-	int point[2]; 
-	int pair;
-};
 
 /*
     point[0] - X value
@@ -20,8 +13,16 @@ struct Segment
     TODO(Andrei) - Add a player index in the struct.
 */
 
+struct Segment
+{
+    int point[2]; 
+	int pair;
+};
+
 static struct Segment segment[30];
 static int length = 30; // TODO(Andrei) - Make the player choose based on levels.
+static int radius = 8;
+static float pointDis = 65.0f;
 
 /* Functions regarding point spawning */
 
@@ -44,14 +45,18 @@ static void setRandomPoints (Rectangle bound)
 {
     const int lengthX = (int)(bound.x + bound.width);
     const int lengthY = (int)(bound.y + bound.height);
+    
     srand(time(0));
+    
     for (int i = 0; i < length; ) {
     	int x = rand() % lengthX;
         while (!(bound.x <= x && x <= bound.width))
              x = rand() % lengthX;
+         
         int y = rand() % lengthY;
         while (!(bound.y <= y && y <= bound.height))
              y = rand() % lengthY;
+         
         if (isValidPoint(i, x, y)) {
             segment[i].point[0] = x;
             segment[i].point[1] = y;
@@ -93,14 +98,17 @@ static void DelayTime(float seconds)
 
 static void PreRender(Rectangle backRect, Rectangle frontRect)
 {
-    const float seconds = 0.35;
+    const float seconds = 0.35f;
     for (int i = 0; i < length;) {
         BeginDrawing();
             ClearBackground(WHITE);
+            
             DrawBackground(backRect, frontRect);
+            
             for (int j = 0; j < i; j++)
                 DrawCircle(segment[j].point[0], segment[j].point[1], radius, BLACK);
         EndDrawing();
+        
         DelayTime(seconds);
         i++;
     }
@@ -108,27 +116,38 @@ static void PreRender(Rectangle backRect, Rectangle frontRect)
 
 static void MouseAction()
 {
-    // Curren mouse position.
-    Vector2 mousePosition = GetMousePosition();
+    Vector2 mousePos = GetMousePosition();
     
     for (int i = 0; i < length; i++) 
-        if (pointDistance(mousePosition.x, mousePosition.y, segment[i].point[0], segment[i].point[1]) <= radius) {
+        if (pointDistance(mousePos.x, mousePos.y, segment[i].point[0], segment[i].point[1]) <= radius
+                          && segment[i].pair < 0) 
+        {
             DrawCircle(segment[i].point[0], segment[i].point[1], radius, MAROON);
-            //if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) { // TODO(Andrei): Make the point segment follow the mouse.  
+            
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                segment[i].pair = segment[i].pair * (-1) - 3;
         }
 }   
 
+static void DrawSegment()
+{
+    const float thickness = 6.0f;
+    
+    Vector2 mousePos = GetMousePosition();
+    
+    for (int i = 0; i < length; i++) {
+        Vector2 startPos = {segment[i].point[0], segment[i].point[1]};
+        
+        if (segment[i].pair == -1)
+            DrawLineEx(startPos, mousePos, thickness, BLACK);
+    }
+}
+
 void startGame()
 {
-    // Constants.
-    radius = 8;
-    pointDis = 65.0f;
-   
     // Background rectangle
     Rectangle backRect = { 60, 50, GetScreenWidth() - 120, (GetScreenHeight() - GetScreenHeight() / 4) - 50};
     Rectangle frontRect = { 70, 60, GetScreenWidth() - 140, (GetScreenHeight() - GetScreenHeight() / 4) - 70};
-    
-    // Random point spawning
     Rectangle bound = {frontRect.x + 50, frontRect.y + 50, frontRect.width - 50, frontRect.height - 50};
     setRandomPoints(bound);
                                                                                         
@@ -139,6 +158,7 @@ void startGame()
         BeginDrawing();
             Render(backRect, frontRect);
             MouseAction();
+            DrawSegment();
         EndDrawing();
     }
     CloseWindow();

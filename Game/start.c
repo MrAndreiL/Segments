@@ -1,5 +1,5 @@
 #include "start.h"
-#include "utilities.h"
+#include "raylib.h"
 #include "game.h"
 
 static void drawTitleScreen(void)
