@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 /*
     point[0] - X value
@@ -118,14 +119,28 @@ static void MouseAction()
 {
     Vector2 mousePos = GetMousePosition();
     
+    static int carry = 0; // if there are lines drawn to the mouse 
+        
     for (int i = 0; i < length; i++) 
         if (pointDistance(mousePos.x, mousePos.y, segment[i].point[0], segment[i].point[1]) <= radius
                           && segment[i].pair < 0) 
         {
             DrawCircle(segment[i].point[0], segment[i].point[1], radius, MAROON);
             
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-                segment[i].pair = segment[i].pair * (-1) - 3;
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                if (carry) {
+                    for (int j = 0; j < length; j++)
+                        if (segment[j].pair == -1) {
+                            segment[j].pair = i;
+                            segment[i].pair = j;
+                            carry = 0;
+                            break;
+                        }
+                } else {
+                    carry = 1;
+                    segment[i].pair = -1;
+                }
+            }
         }
 }   
 
@@ -135,12 +150,17 @@ static void DrawSegment()
     
     Vector2 mousePos = GetMousePosition();
     
-    for (int i = 0; i < length; i++) {
-        Vector2 startPos = {segment[i].point[0], segment[i].point[1]};
+    for (int i = 0; i < length; i++)
+        if (segment[i].pair != -2) {
+            Vector2 startPos = {segment[i].point[0], segment[i].point[1]};
         
-        if (segment[i].pair == -1)
-            DrawLineEx(startPos, mousePos, thickness, BLACK);
-    }
+            if (segment[i].pair == -1)
+                DrawLineEx(startPos, mousePos, thickness, BLACK);
+            else {
+                Vector2 endPos = {segment[segment[i].pair].point[0], segment[segment[i].pair].point[1]};
+                DrawLineEx(startPos, endPos, thickness, BLACK);
+            }
+        }
 }
 
 void startGame()
