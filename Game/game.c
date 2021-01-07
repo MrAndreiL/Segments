@@ -1,13 +1,15 @@
 #include "game.h"
 #include "raylib.h"
 #include "utilities.h"
+#include "player.h"
+#include "computer.h"
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 
-int length = 11;
+int length = 30;
 
 int radius = 8;
 
@@ -15,15 +17,13 @@ float pointDis = 65.0f;
 
 float thickness = 6.0f;
 
-static int carry = -1; // If there is a segment currently carried by the mouse.
+int carry = -1; // If there is a segment currently carried by the mouse.
 
-static int nrSegments = 0;
+int nrSegments = 0;
 
 static int nrSegmentsLeft = 0;
 
-static int pairedPoints[10];
-
-static int gameState = 1; // 1 - player's turn, 0 - computer's turn
+int gameState = 1; // 1 - player's turn, 0 - computer's turn
 
 /* Functions regarding point spawning */
 
@@ -35,7 +35,7 @@ static int isValidPoint (int index, int x, int y)
         if (pointDistance(x, y, segment[i].point.x, segment[i].point.y) <= pointDis)
             return 0;
     return 1;
-}   
+}
 
 static void setRandomPoints (Rectangle bound)
 {
@@ -129,7 +129,7 @@ static void Render(Rectangle backRect, Rectangle frontRect)
     DrawPoints();
 }
 
-static void SegmentsLeft()
+void SegmentsLeft()
 {
     // Returns the number of valid segments left.
     if (!nrSegments) {
@@ -172,37 +172,18 @@ static void PreRender(Rectangle backRect, Rectangle frontRect)
     SegmentsLeft();
 }
 
-static void MouseAction()
+static int isMouseBounds(Rectangle bound)
 {
-    Vector2 mousePos = GetMousePosition();
-        
-    for (int i = 0; i < length; i++) {
-        if (pointDistance(mousePos.x, mousePos.y, segment[i].point.x, segment[i].point.y) <= radius &&
-                          segment[i].pair < 0) 
-        {
-            if (carry != i)
-                DrawCircle(segment[i].point.x, segment[i].point.y, radius, MAROON);
-            
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                if (carry == -1) 
-                    carry = i;
-                if (carry != i && segment[carry].valid) {
-                    segment[carry].pair = i;
-                    segment[i].pair = carry;
-                    carry = -1;
-                    pairedPoints[nrSegments] = i;
-                    nrSegments++;  
-                    SegmentsLeft();
-                }  
-                break;                
-            }
-        }
-        
-        if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
-            carry = -1;
-    }
-}   
-
+    int mouseX = GetMouseX();
+    int mouseY = GetMouseY();
+    
+    if (!(bound.x <= mouseX && mouseX <= bound.width)) return 0;
+    
+    if (!(bound.y <= mouseY && mouseY <= bound.height)) return 0;
+    
+    return 1;
+}
+  
 static void DrawSegment()
 {   
     for (int i = 0; i < length; i++) {
@@ -229,6 +210,14 @@ static void DrawSegment()
     }
 }
 
+void Turn()
+{
+    if (gameState) 
+        PlayerTurn();
+    else ComputerTurn();
+    SegmentsLeft();
+}
+
 void startGame()
 {
     /* Import necessary info */
@@ -248,7 +237,7 @@ void startGame()
     // Background rectangle
     Rectangle backRect = { 60, 50, GetScreenWidth() - 120, (GetScreenHeight() - GetScreenHeight() / 4) - 50};
     Rectangle frontRect = { 70, 60, GetScreenWidth() - 140, (GetScreenHeight() - GetScreenHeight() / 4) - 70};
-    Rectangle bound = {frontRect.x + 50, frontRect.y + 50, frontRect.width - 50, frontRect.height - 50};
+    Rectangle bound = {frontRect.x + 50, frontRect.y + 100, frontRect.width - 50, frontRect.height - 50};
     setRandomPoints(bound);
                                                                                         
     PreRender(backRect, frontRect);
@@ -258,7 +247,7 @@ void startGame()
         BeginDrawing();
             Render(backRect, frontRect);
             DrawInfo(ExitSTexture, ExitHTexture);
-            MouseAction();
+            Turn();
             DrawSegment();
         EndDrawing();
     }

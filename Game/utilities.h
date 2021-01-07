@@ -14,15 +14,23 @@ struct Segment
     int valid;
 };
 
-struct Segment segment[11];
+struct Segment segment[30];
+
+int pairedPoints[30];
 
 extern int length; 
+
+extern int nrSegments;
+
+extern int gameState;
 
 extern int radius;
 
 extern float pointDis;
 
 extern float thickness;
+
+extern int carry;
 
 int pointDistance (int x1, int y1, int x2, int y2);
 
