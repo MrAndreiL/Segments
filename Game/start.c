@@ -20,7 +20,7 @@ void startScreen(void)
     InitWindow(0, 0, "Segmente");
     //InitAudioDevice();
 
-    SetWindowMonitor (0);
+    SetWindowMonitor(0);
     SetTargetFPS(60); 
     SetMousePosition(0, 0);
     

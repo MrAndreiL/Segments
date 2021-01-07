@@ -14,7 +14,7 @@ struct Segment
     int valid;
 };
 
-struct Segment segment[30];
+struct Segment segment[11];
 
 extern int length; 
 
