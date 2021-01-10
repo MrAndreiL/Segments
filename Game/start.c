@@ -1,5 +1,5 @@
 #include "start.h"
-#include "utilities.h"
+#include "raylib.h"
 #include "game.h"
 
 static void drawTitleScreen(void)
@@ -18,9 +18,14 @@ static void drawTitleScreen(void)
 void startScreen(void)
 {
     InitWindow(0, 0, "Segmente");
+    //InitAudioDevice();
 
-    SetWindowMonitor (0);
+    int backWidth = GetScreenWidth() / 3;
+    int backHeight = GetScreenHeight() / 3;
+
+    SetWindowMonitor(1);
     SetTargetFPS(60); 
+    SetMousePosition(0, 0);
     
     const int WINWIDTH = GetScreenWidth()/3;
     const int WINHEIGHT = GetScreenHeight()/3;
@@ -35,36 +40,45 @@ void startScreen(void)
     /* Buttons */
     InitAudioDevice();
     
+    Image Start = LoadImage("Resources/StartImage.png");
+    Texture2D texture = LoadTextureFromImage(Start);
+    UnloadImage(Start);
     //Sound fxButton = LoadSound("Resources/");
-    Texture2D button = LoadTexture("Resources/button.png");
-    Texture2D button2 = LoadTexture("Resources/sound.png");
-    Texture2D button3 = LoadTexture("Resources/settings.png");
+    Texture2D button = LoadTexture("Resources/StartButtonSimple.png");
+    Texture2D button3 = LoadTexture("Resources/StartButtonHover.png");
+    Texture2D button2 = LoadTexture("Resources/ExitSimple.png");
+    Texture2D button4 = LoadTexture("Resources/ExitHover.png");
     
     int frameHeight = button.height/NUM_FRAMES;
     int frameHeight2 = button2.height/NUM_FRAMES;
     int frameHeight3 = button3.height/NUM_FRAMES;
-    
+    int frameHeight4 = button2.height/NUM_FRAMES;
+
     Rectangle sourceRec = {0,0,button.width,frameHeight};
-    Rectangle btnBounds = {WINWIDTH/0.675-button.width/2,WINHEIGHT/0.5-button.height/2,button.width,frameHeight};
-    
-    Rectangle sourceRec2 = {0,0,button2.width,frameHeight2};
-    Rectangle btn2Bounds = {WINWIDTH/0.72-button2.width/2,WINHEIGHT/0.425-button2.height/2,button2.width,frameHeight2};
+    Rectangle btnBounds = {WINWIDTH/0.66-button.width/2,WINHEIGHT/0.5-button.height/2,button.width,frameHeight};
     
     Rectangle sourceRec3 = {0,0,button3.width,frameHeight3};
-    Rectangle btn3Bounds = {WINWIDTH/0.635-button3.width/2,WINHEIGHT/0.425-button3.height/2,button3.width,frameHeight3};
+    Rectangle btn3Bounds = {WINWIDTH/0.66-button3.width/2,WINHEIGHT/0.5-button3.height/2,button3.width,frameHeight3};
+    
+    Rectangle sourceRec2 = {0,0,button2.width,frameHeight2};
+    Rectangle btn2Bounds = {WINWIDTH/0.375-button2.width/2,WINHEIGHT/1.75-button2.height/2,button2.width,frameHeight2};
+    
+    Rectangle sourceRec4 = {0,0,button4.width,frameHeight4};
+    Rectangle btn4Bounds = {WINWIDTH/0.375-button4.width/2,WINHEIGHT/1.75-button3.height/2,button4.width,frameHeight4};
     
     int btnState = 0;
     bool btnAction = false;
     Vector2 mousePoint = { 0.0f, 0.0f };
-    
+    Texture2D aux = LoadTexture("Resources/StartButtonSimple.png");
+    Texture2D aux2 = LoadTexture("Resources/ExitSimple.png");
 
     while (!WindowShouldClose())
     {
         mousePoint = GetMousePosition();
         btnAction = false;
-        
         if(CheckCollisionPointRec(mousePoint, btnBounds))
         {
+            button=button3;
             if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
                 btnState = 2;
             else
@@ -73,30 +87,44 @@ void startScreen(void)
                 btnAction = true;
         }
         else
-            btnState = 0;
+        {
+            btnState = 0;    
+            button = aux;
+        }
+        if(CheckCollisionPointRec(mousePoint, btn2Bounds))
+        {
+            button2=button4;
+            if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+                btnState = 2;
+            else
+                btnState = 1;
+            if(IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+                btnAction = true;
+        }
+        else
+        {
+            btnState = 0;    
+            button2 = aux2;
+        }
         sourceRec.y = btnState*frameHeight;
-        //sourceRec.y = btnState*frameHeight2;
         if (btnAction) {
             scenePath = 1;
             break;
         }
-        if (btnState == 1)
-            
         
         BeginDrawing();
             drawTitleScreen();
             ClearBackground(RAYWHITE);
-            //DrawTextureRec(button, sourceRec, (Vector2){btnBounds.x, btnBounds.y}, GREEN);
+            DrawTexture(texture, backWidth - texture.width/2 + 320, backHeight - texture.height/2, WHITE);
             DrawTextureRec(button, sourceRec, (Vector2){btnBounds.x, btnBounds.y}, RAYWHITE);
             DrawTextureRec(button2, sourceRec2, (Vector2){btn2Bounds.x, btn2Bounds.y}, RAYWHITE);
-            DrawTextureRec(button3, sourceRec3, (Vector2){btn3Bounds.x, btn3Bounds.y}, RAYWHITE);
         EndDrawing();
     }
     
-    //UnloadTexture(button);
-    //UnloadTexture(button2);
-    //CloseAudioDevice();
-    //CloseWindow();
+    UnloadTexture(button);
+    UnloadTexture(button2);
+    CloseAudioDevice();
+    CloseWindow();
     if (scenePath == 1) // TODO (Andrei): improve this with a switch statement.
         startGame();
         
